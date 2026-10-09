@@ -1,0 +1,14 @@
+# Remote state (recommended once you work from more than one machine or with CI).
+#
+# 1. Create an Azure Storage account and a Blob container for Terraform state.
+# 2. Rename this file to backend.tf and fill in the names below.
+# 3. Run: terraform init -migrate-state
+
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "<your-tfstate-rg>"
+    storage_account_name = "<yourstorageaccount>"
+    container_name       = "tfstate"
+    key                  = "ecommerce/dev/terraform.tfstate"
+  }
+}

@@ -1,0 +1,22 @@
+# Copy to terraform.tfvars and edit. terraform.tfvars is git-ignored.
+
+location     = "eastus"
+project_name = "ecommerce"
+environment  = "dev"
+
+vnet_cidr       = "10.0.0.0/16"
+app_subnet_cidr = "10.0.0.0/24"
+db_subnet_cidr  = "10.0.1.0/24"
+
+backend_port    = 8080
+backend_sku_name = "B1"
+
+# PostgreSQL Flexible Server settings
+db_sku_name       = "B_Standard_B1ms"
+db_storage_mb     = 32768
+db_version        = "16"
+db_name           = "ecommerce"
+db_username       = "appadmin"
+db_backup_retention_days = 7
+
+cdn_sku = "Standard_Microsoft"

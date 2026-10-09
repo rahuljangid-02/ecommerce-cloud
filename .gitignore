@@ -1,0 +1,28 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+infra/backend.tf
+# Commit .terraform.lock.hcl so everyone uses the same provider versions.
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Secrets / local config
+.env
+.env.*
+*.pem
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
