@@ -1,18 +1,14 @@
-# E-commerce on Azure
+# E-commerce on Azure (PaaS)
 
-A production-style, three-tier deployment defined entirely in Terraform. The infrastructure is the point of this repo; the app code is a thin starter you replace with your own e-commerce platform.
+A production-style Azure PaaS deployment defined entirely in Terraform. This repo uses managed Azure services instead of VMs and custom load-balancer infrastructure.
 
 ```
-                      ┌──────────── Azure Blob stroage + CDN (HTTPS) ───────────────┐
+                      ┌──────────── Azure CDN (HTTPS) ───────────────┐
    Browser ──────────►│  /*       ──► Azure Storage static website   │
-                      │  /api/*   ──► Azure App Service backend 
-                                    Virtual Machines with auto scaling enabled
+                      │  /api/*   ──► Azure App Service backend      │
                       └─────────────────────────┬────────────────────┘
                                                 ▼
                                       Azure PostgreSQL Flexible Server
-                                      Azure Database service
-                                                ▼
-                                      Networking(Virtual network setup)
                                                 ▼
                                      Azure Key Vault (DB password)
 ```
@@ -20,11 +16,11 @@ A production-style, three-tier deployment defined entirely in Terraform. The inf
 | Piece | What it is | Where |
 |---|---|---|
 | Frontend | Azure Storage static website + Azure CDN | `infra/modules/frontend`, code in `frontend/` |
-| Backend | Azure App Service + managed identity | `infra/modules/backend`, code in `backend/` |
+| Backend | Azure App Service, managed identity, PaaS runtime | `infra/modules/backend`, code in `backend/` |
 | Database | Azure PostgreSQL Flexible Server | `infra/modules/database` |
 | Secrets | Azure Key Vault secret for database password | `infra/modules/database` |
 | Infra as code | Terraform root config wiring the modules | `infra/` |
-| Networking | Azure VNet + application subnet + database subnet | `infra/modules/networking` |
+| Networking | Azure VNet + subnets for app integration and private database access | `infra/modules/networking` |
 
 ## Project layout
 
@@ -76,7 +72,8 @@ App logs can be viewed in Azure App Service > Log stream. If you want to inspect
 
 ## What's already production-minded
 
-- Azure VNet with separate app and database subnets.
+- Azure App Service is used instead of VM-based compute, matching the Azure PaaS approach.
+- Azure VNet with separate app and database subnets supports private connectivity patterns.
 - Managed identity gives the app access to Key Vault without embedding credentials.
 - PostgreSQL password is generated and stored in Azure Key Vault.
 - Azure Storage static website hosting is fronted by Azure CDN.

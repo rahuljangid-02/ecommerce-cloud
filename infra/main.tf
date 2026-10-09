@@ -26,6 +26,7 @@ module "database" {
   name                  = local.name
   resource_group_name   = azurerm_resource_group.main.name
   location              = azurerm_resource_group.main.location
+  vnet_id               = module.networking.vnet_id
   subnet_id             = module.networking.db_subnet_id
   admin_username        = var.db_username
   database_name         = var.db_name

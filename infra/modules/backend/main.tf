@@ -21,29 +21,30 @@ resource "azurerm_linux_web_app" "this" {
   resource_group_name = var.resource_group_name
   service_plan_id     = azurerm_service_plan.this.id
   https_only          = true
+  virtual_network_subnet_id = var.app_subnet_id
 
   identity {
     type = "SystemAssigned"
   }
 
   site_config {
-    always_on                 = true
-    health_check_path         = "/api/health"
-    ftps_state                = "FtpsOnly"
+    always_on         = true
+    health_check_path = "/api/health"
+    ftps_state        = "FtpsOnly"
     application_stack {
       node_version = "20-lts"
     }
   }
 
   app_settings = {
-    WEBSITES_PORT             = tostring(var.app_port)
-    PORT                      = tostring(var.app_port)
-    DB_HOST                   = var.db_host
-    DB_PORT                   = tostring(var.db_port)
-    DB_NAME                   = var.db_name
-    DB_USER                   = var.db_user
-    AZURE_KEY_VAULT_URL       = var.key_vault_url
-    DB_PASSWORD_SECRET_NAME   = var.secret_name
+    WEBSITES_PORT                   = tostring(var.app_port)
+    PORT                           = tostring(var.app_port)
+    DB_HOST                        = var.db_host
+    DB_PORT                        = tostring(var.db_port)
+    DB_NAME                        = var.db_name
+    DB_USER                        = var.db_user
+    AZURE_KEY_VAULT_URL            = var.key_vault_url
+    DB_PASSWORD_SECRET_NAME        = var.secret_name
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
   }
 

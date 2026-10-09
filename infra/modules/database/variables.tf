@@ -13,8 +13,13 @@ variable "location" {
   type        = string
 }
 
+variable "vnet_id" {
+  description = "The VNet used for the private DNS zone link and private endpoint."
+  type        = string
+}
+
 variable "subnet_id" {
-  description = "Subnet used for the database network placement."
+  description = "Subnet used for the database private endpoint."
   type        = string
 }
 

@@ -12,6 +12,14 @@ resource "azurerm_subnet" "app" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = [var.app_subnet_cidr]
+
+  delegation {
+    name = "webapp-delegation"
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }
 
 resource "azurerm_subnet" "db" {
@@ -27,7 +35,7 @@ resource "azurerm_network_security_group" "app" {
   resource_group_name = var.resource_group_name
 
   security_rule {
-    name                       = "app-http"
+    name                       = "AllowAppIngress"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
@@ -43,5 +51,5 @@ resource "azurerm_network_security_group" "app" {
 
 resource "azurerm_subnet_network_security_group_association" "app" {
   subnet_id                 = azurerm_subnet.app.id
-  network_security_group_id  = azurerm_network_security_group.app.id
+  network_security_group_id = azurerm_network_security_group.app.id
 }
