@@ -1,7 +1,7 @@
 // In production CloudFront serves this page AND forwards /api/* to the backend,
 // so relative URLs just work. For local testing against another host, set
 // window.API_BASE = 'http://localhost:8080' in the browser console first.
-const API_BASE = window.API_BASE || '';
+const API_BASE = "https://ecommerce-backend-0nyo.onrender.com";
 
 const statusEl = document.getElementById('status');
 const productsEl = document.getElementById('products');
