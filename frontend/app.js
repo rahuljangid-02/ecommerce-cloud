@@ -24,9 +24,111 @@ function addToCart(product) {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-
+    renderCart();
     alert(product.name + " added to cart!");
 }
+
+function renderCart() {
+    const cart = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+    );
+
+    const cartItems = document.getElementById("cart-items");
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+
+    cartItems.replaceChildren();
+
+    let total = 0;
+    let count = 0;
+
+    if (cart.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "Your cart is empty.";
+        cartItems.appendChild(empty);
+    }
+
+    cart.forEach(item => {
+        const quantity = Number(item.quantity);
+        const price = Number(item.price);
+
+        total += price * quantity;
+        count += quantity;
+
+        const row = document.createElement("div");
+        row.className = "cart-item";
+
+        const details = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = item.name;
+
+        const subtotal = document.createElement("p");
+        subtotal.textContent =
+            "$" + price.toFixed(2) +
+            " x " + quantity +
+            " = $" + (price * quantity).toFixed(2);
+
+        details.append(name, subtotal);
+
+        const controls = document.createElement("div");
+        controls.className = "cart-controls";
+
+        const minus = document.createElement("button");
+        minus.textContent = "-";
+        minus.onclick = () => updateQuantity(item.id, -1);
+
+        const qty = document.createElement("span");
+        qty.textContent = quantity;
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.onclick = () => updateQuantity(item.id, 1);
+
+        const remove = document.createElement("button");
+        remove.textContent = "Remove";
+        remove.onclick = () => removeItem(item.id);
+
+        controls.append(minus, qty, plus, remove);
+        row.append(details, controls);
+        cartItems.appendChild(row);
+    });
+
+    cartCount.textContent = count;
+    cartTotal.textContent = "$" + total.toFixed(2);
+}
+
+// Increase or decrease quantity
+function updateQuantity(id, change) {
+    let cart = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+    );
+
+    const item = cart.find(p => p.id === id);
+
+    if (!item) return;
+
+    item.quantity += change;
+
+    cart = cart.filter(p => p.quantity > 0);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    renderCart();
+}
+
+// Remove a product
+function removeItem(id) {
+    let cart = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+    );
+
+    cart = cart.filter(p => p.id !== id);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    renderCart();
+}
+
 const statusEl = document.getElementById('status');
 const productsEl = document.getElementById('products');
 const servedByEl = document.getElementById('served-by');
@@ -100,3 +202,4 @@ async function loadProducts() {
 
 checkHealth();
 loadProducts();
+renderCart();
