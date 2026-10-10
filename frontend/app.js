@@ -3,6 +3,30 @@
 // window.API_BASE = 'http://localhost:8080' in the browser console first.
 const API_BASE = "https://ecommerce-backend-0nyo.onrender.com";
 
+function addToCart(product) {
+    let cart = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+    );
+
+    let existingProduct = cart.find(
+        item => item.id === product.id
+    );
+
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    alert(product.name + " added to cart!");
+}
 const statusEl = document.getElementById('status');
 const productsEl = document.getElementById('products');
 const servedByEl = document.getElementById('served-by');
@@ -41,6 +65,7 @@ function renderProducts(products) {
     button.type = 'button';
     button.textContent = 'Add to cart'; // TODO: wire this to your cart API
 
+    button.addEventListener('click', () => {addToCart(p);});
     card.append(title, desc, price, button);
     productsEl.append(card);
   }
