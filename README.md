@@ -27,6 +27,20 @@ Customers can browse products, add items to their shopping cart, modify quantiti
 
 The repository also includes Terraform configurations for a separate Azure-based infrastructure architecture. The current live application is hosted on Render.
 
+
+## Project Screenshots
+
+### E-Commerce Storefront
+![Storefront](screenshots/storefront.png)
+
+### Shopping Cart
+![Shopping Cart](screenshots/shopping-cart.png)
+
+### Cloud Deployment
+![Render Deployment](screenshots/render-deployment.png)
+
+### REST API Integration
+![Backend API](screenshots/backend-api.png)
 ## Technology Stack
 
 | Component | Technology |
