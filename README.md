@@ -1,92 +1,112 @@
-# E-commerce on Azure (PaaS)
+# Cloud-Deployed E-Commerce Web Application
 
-A production-style Azure PaaS deployment defined entirely in Terraform. This repo uses managed Azure services instead of VMs and custom load-balancer infrastructure.
+A cloud-hosted e-commerce storefront built using HTML, CSS, JavaScript, Node.js, Express.js, and PostgreSQL. The application is deployed on Render with separate frontend and backend services.
 
-```
-                      ┌──────────── Azure CDN (HTTPS) ───────────────┐
-   Browser ──────────►│  /*       ──► Azure Storage static website   │
-                      │  /api/*   ──► Azure App Service backend      │
-                      └─────────────────────────┬────────────────────┘
-                                                ▼
-                                      Azure PostgreSQL Flexible Server
-                                                ▼
-                                     Azure Key Vault (DB password)
-```
+**Live Website:** https://ecommerce-frontend-2582.onrender.com
 
-| Piece | What it is | Where |
-|---|---|---|
-| Frontend | Azure Storage static website + Azure CDN | `infra/modules/frontend`, code in `frontend/` |
-| Backend | Azure App Service, managed identity, PaaS runtime | `infra/modules/backend`, code in `backend/` |
-| Database | Azure PostgreSQL Flexible Server | `infra/modules/database` |
-| Secrets | Azure Key Vault secret for database password | `infra/modules/database` |
-| Infra as code | Terraform root config wiring the modules | `infra/` |
-| Networking | Azure VNet + subnets for app integration and private database access | `infra/modules/networking` |
+**Backend API:** https://ecommerce-backend-0nyo.onrender.com/api/health
 
-## Project layout
+**GitHub Repository:** https://github.com/rahuljangid-02/ecommerce-cloud
 
-```
-infra/
-  main.tf  variables.tf  outputs.tf  versions.tf
-  terraform.tfvars.example     copy to terraform.tfvars
-  backend.tf.example           remote state (Azure Storage), when you want it
-  modules/
-    networking/   database/   backend/   frontend/
-frontend/         static storefront (HTML/CSS/JS)
-backend/          Express API (Node 18+), talks to PostgreSQL
-scripts/deploy-frontend.sh
-```
+## Project Overview
 
-## Quick start
+This project demonstrates full-stack web development, REST API integration, relational database connectivity, and cloud deployment.
 
-Prerequisites: an Azure subscription, the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed and logged in (`az login`), and [Terraform](https://developer.hashicorp.com/terraform/install) 1.6+.
+Customers can browse products, add items to their shopping cart, modify quantities, remove items, and view dynamically calculated totals.
 
-```bash
-cd infra
-cp terraform.tfvars.example terraform.tfvars   # edit if you like
-terraform init
-terraform plan
-terraform apply
+## Cloud Architecture
 
-cd ..
-./scripts/deploy-frontend.sh        # uploads frontend/ to the Storage account
-terraform -chdir=infra output frontend_url
-```
+**Customer Browser → Render Static Site → Render Node.js Web Service → PostgreSQL Database**
 
-Open the `frontend_url`. The page shows "API online" and a product list. Until you point the stack at your own repo, the products come from a built-in placeholder API on the App Service.
+- **Frontend:** Render Static Site hosting HTML, CSS, and JavaScript.
+- **Backend:** Node.js and Express.js REST API deployed using Render Web Service.
+- **Database:** PostgreSQL stores product information.
+- **Communication:** HTTPS requests connect the frontend and backend.
+- **Shopping Cart:** Browser localStorage retains shopping cart data across page refreshes.
+- **Version Control:** Git and GitHub manage source code and deployment updates.
 
-## Running your own backend
+The repository also includes Terraform configurations for a separate Azure-based infrastructure architecture. The current live application is hosted on Render.
 
-1. Push this repo to GitHub (public repo, or adapt the app deployment flow for private repos).
-2. In `terraform.tfvars`, set the Azure app settings or repo source you want to deploy.
-3. `terraform apply`.
+## Technology Stack
 
-The backend app reads the database password from Azure Key Vault using managed identity, creates a `products` table, and seeds sample rows. Check `https://<frontend_url>/api/db-check`.
-
-App logs can be viewed in Azure App Service > Log stream. If you want to inspect the runtime app environment, use the Azure Portal or `az webapp log tail`.
-
-## Cost: read before you apply
-
-- Azure App Service, PostgreSQL Flexible Server, and Azure CDN all bill while running.
-- Key Vault and storage also carry small charges depending on usage.
-- **When you stop working: `cd infra && terraform destroy`.**
-
-## What's already production-minded
-
-- Azure App Service is used instead of VM-based compute, matching the Azure PaaS approach.
-- Azure VNet with separate app and database subnets supports private connectivity patterns.
-- Managed identity gives the app access to Key Vault without embedding credentials.
-- PostgreSQL password is generated and stored in Azure Key Vault.
-- Azure Storage static website hosting is fronted by Azure CDN.
-- App Service health checks keep the app healthy while serving traffic.
-
-## Next steps as you learn
-
-| Topic | What to try |
+| Component | Technology |
 |---|---|
-| HTTPS end to end | Add a custom domain in Azure Front Door or CDN and bind a TLS certificate. |
-| Key Vault hardening | Restrict access to the app identity and rotate secrets regularly. |
-| Remote state | Rename `backend.tf.example` to `backend.tf` and configure an Azure Storage backend. |
-| Deploys from GitHub | Add a GitHub Actions workflow that runs Terraform and deploys the frontend artifacts. |
-| Observability | Enable Azure Monitor, App Service logs, and PostgreSQL metrics. |
-| Production database | Increase the PostgreSQL SKU and retention settings for multi-zone safety and backups. |
-| SPA routing | If your frontend uses client-side routes, configure CDN rules so non-API paths resolve to `index.html`. |
+| Frontend | HTML5, CSS3, JavaScript |
+| Backend | Node.js, Express.js |
+| Database | PostgreSQL |
+| Cloud Hosting | Render |
+| Version Control | Git, GitHub |
+| Infrastructure as Code | Terraform (Azure configuration) |
+| API Architecture | REST API |
+
+## Features
+
+- Product listing retrieved from PostgreSQL through REST APIs.
+- Backend health-status monitoring.
+- Add to Cart functionality.
+- Increase and decrease product quantities.
+- Remove individual products from the cart.
+- Automatic shopping cart total calculation.
+- Shopping cart persistence using localStorage.
+- Responsive storefront layout.
+- Cloud-based frontend and backend deployment.
+
+## Project Structure
+
+- `frontend/` — HTML, CSS, JavaScript, and shopping cart functionality.
+- `backend/` — Express server and PostgreSQL integration.
+- `infra/` — Terraform infrastructure configuration for Azure.
+- `.github/workflows/` — GitHub Actions workflow configurations.
+- `scripts/` — Deployment helper scripts.
+- `README.md` — Project documentation.
+
+## REST API Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/health` | Check backend health |
+| `GET /api/db-check` | Check database connectivity |
+| `GET /api/products` | Retrieve all products |
+| `GET /api/products/:id` | Retrieve a specific product |
+
+## Render Deployment
+
+**Backend Web Service**
+
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Runtime: Node.js
+
+Database connection information is configured through Render environment variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`.
+
+**Frontend Static Site**
+
+- Root Directory: `frontend`
+- Build Command: `echo "No build needed"`
+- Publish Directory: `.`
+
+The frontend communicates with the deployed backend using its public HTTPS API URL.
+
+## Screenshots
+
+Screenshots of the deployed storefront, shopping cart, and cloud infrastructure will be added to demonstrate the working application.
+
+## Current Limitations
+
+- The shopping cart is stored in browser localStorage, not in PostgreSQL.
+- Checkout, order processing, and online payment integration are not implemented.
+- The application is intended for learning, cloud deployment demonstrations, and portfolio presentation.
+
+## Future Enhancements
+
+- User registration and authentication.
+- Database-backed shopping carts and orders.
+- Secure checkout and payment gateway integration.
+- Product search and category filtering.
+- Administrative dashboard.
+- Automated testing and expanded CI/CD workflows.
+
+## Learning Outcomes
+
+This project provided practical experience with cloud application deployment, API integration, PostgreSQL connectivity, Git-based version control, environment variable configuration, CORS, and full-stack debugging.
