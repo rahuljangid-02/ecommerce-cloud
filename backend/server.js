@@ -95,9 +95,41 @@ async function getPool() {
         ('Wireless Headphones', 'Noise-cancelling, 30-hour battery.', 79.99),
         ('Mechanical Keyboard', 'Hot-swappable switches, USB-C.', 109.00),
         ('Travel Backpack', '25L, water-resistant, laptop sleeve.', 54.50),
-        ('Desk Lamp', 'Dimmable LED with warm and cool modes.', 32.25)
+        ('Desk Lamp', 'Dimmable LED with warm and cool modes.', 32.25),
+        
     `);
   }
+
+  // Add new products only if they don't already exist
+  await p.query(`
+    INSERT INTO products (name, description, price)
+
+    SELECT v.name, v.description, v.price
+    FROM (VALUES
+      ('Wireless Mouse',
+       'Ergonomic wireless mouse with adjustable DPI.',
+       24.99),
+
+      ('Smartwatch',
+       'Fitness tracking smartwatch with heart rate monitor.',
+       149.00),
+
+      ('Bluetooth Speaker',
+       'Portable Bluetooth speaker with deep bass.',
+       59.99),
+
+      ('Laptop Stand',
+       'Adjustable aluminum laptop stand for desks.',
+       39.99)
+
+    ) AS v(name, description, price)
+
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM products existing
+      WHERE existing.name = v.name
+    )
+  `);
 
   pool = p;
   return pool;
