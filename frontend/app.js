@@ -3,6 +3,17 @@
 // window.API_BASE = 'http://localhost:8080' in the browser console first.
 const API_BASE = "https://ecommerce-backend-0nyo.onrender.com";
 
+const productImages = {
+    "Wireless Headphones": "headphones.jpg",
+    "Mechanical Keyboard": "keyboard.jpg",
+    "Travel Backpack": "backpack.jpg",
+    "Desk Lamp": "lamp.jpg",
+    "Wireless Mouse": "mouse.jpg",
+    "Smartwatch": "smartwatch.jpg",
+    "Bluetooth Speaker": "speaker.jpg",
+    "Laptop Stand": "laptop-stand.jpg"
+};
+
 function addToCart(product) {
     let cart = JSON.parse(
         localStorage.getItem("cart") || "[]"
@@ -152,6 +163,19 @@ function renderProducts(products) {
   for (const p of products) {
     const card = document.createElement('article');
     card.className = 'card';
+    
+    const imageFile = productImages[p.name];
+
+    if (imageFile) {
+        const image = document.createElement('img');
+
+        image.src = 'images/' + imageFile;
+        image.alt = p.name;
+        image.className = 'product-image';
+        image.loading = 'lazy';
+
+        card.append(image);
+    }
 
     const title = document.createElement('h2');
     title.textContent = p.name;
